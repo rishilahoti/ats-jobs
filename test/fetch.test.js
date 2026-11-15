@@ -29,10 +29,21 @@ test('uses HTTPS allowlisted endpoints and refuses oversized bodies', async () =
   const original = global.fetch;
   let requestUrl;
   let requestInit;
+  let cancelled = false;
   global.fetch = async (url, init) => {
     requestUrl = url;
     requestInit = init;
-    return new Response('{"jobs":[]}', { status: 200, headers: { 'content-length': '100000' } });
+    return {
+      ok: true,
+      status: 200,
+      headers: { get: () => '100000' },
+      body: {
+        cancel: async () => {
+          cancelled = true;
+          throw new Error('cancel failed');
+        },
+      },
+    };
   };
   try {
     await assert.rejects(
@@ -42,6 +53,7 @@ test('uses HTTPS allowlisted endpoints and refuses oversized bodies', async () =
     assert.equal(requestUrl.protocol, 'https:');
     assert.equal(requestUrl.hostname, 'api.ashbyhq.com');
     assert.equal(requestInit.redirect, 'error');
+    assert.equal(cancelled, true);
   } finally {
     global.fetch = original;
   }

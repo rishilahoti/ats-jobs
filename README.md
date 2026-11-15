@@ -75,6 +75,7 @@ Workday takes `tenant/wdHost/site` (`nvidia/wd5/NVIDIAExternalCareerSite`). Team
 - Slugs are validated before use, generated URLs are restricted to the selected ATS HTTPS host, and redirects are rejected.
 - `publishedAt` is `null` when the ATS omits a valid publication timestamp; `scrapedAt` records collection time.
 - `contentHash` is a deterministic SHA-256 digest for change detection, not an authenticity or signature mechanism.
+- Earlier releases used MD5, so stored hashes differ after upgrading even when a job is unchanged. Reconcile stored `contentHash` values and job counts before deployment.
 - Optional: install `cities.json` (19 MB) to correct city typos; without it, cleaned city names are used as-is.
 - SmartRecruiters returns at most 100 postings per board; Workday at most 200.
 - Workday, Keka, Teamtailor and Pinpoint use unofficial endpoints that can change without notice.
@@ -92,6 +93,7 @@ maintainer must approve the staged npm package with 2FA, confirm publication,
 and only then publish the draft GitHub release:
 
 ````sh
+npm install --global npm@12.2.2 # requires Node.js 22.22.2 or later
 npm stage list ats-jobs
 npm stage approve STAGE_ID_FROM_LIST
 gh release edit "v$(node -p "require('./package.json').version")" --draft=false --latest

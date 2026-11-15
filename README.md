@@ -6,6 +6,8 @@
 
 Ashby · Lever · Greenhouse · Workable · Recruitee · Teamtailor · Pinpoint · SmartRecruiters · Workday · Keka
 
+Requires Node.js 22.12.0 or newer.
+
 ```sh
 npm install ats-jobs
 ```
@@ -19,6 +21,11 @@ const jobs = await getJobs('lever', 'ro');
 // or normalize data you fetched yourself (an array, or { jobs: [...] })
 const same = normalize('lever', rawLeverArray, 'Ro');
 ```
+
+Supported exports are `getJobs`, `normalize`, `fetchBoard`, `FetchError`,
+`PROVIDERS`, and `ADAPTERS`. `PROVIDERS` and the shallow-frozen `ADAPTERS`
+registry are for provider discovery and inspection; mutating the registry or
+adapter modules is not a supported extension mechanism.
 
 Each job looks like:
 
@@ -60,11 +67,14 @@ Workday takes `tenant/wdHost/site` (`nvidia/wd5/NVIDIAExternalCareerSite`). Team
 
 ## Options
 
-`getJobs(provider, slug, { company, userAgent, timeoutMs, maxRetries, retryBaseMs })`. Failures throw `FetchError` (`.statusCode`, `.retryable`). 5xx, 429 and network errors are retried with backoff.
+`getJobs(provider, slug, { company, userAgent, timeoutMs, maxRetries, retryBaseMs, maxResponseBytes })`. Failures throw `FetchError` (`.statusCode`, `.retryable`). 5xx, 429 and network errors are retried with backoff. Responses are capped at 10 MiB by default.
 
 ## Notes
 
 - Descriptions are stripped to plain text and only `http(s)` URLs are kept.
+- Slugs are validated before use, generated URLs are restricted to the selected ATS HTTPS host, and redirects are rejected.
+- `publishedAt` is `null` when the ATS omits a valid publication timestamp; `scrapedAt` records collection time.
+- `contentHash` is a deterministic SHA-256 digest for change detection, not an authenticity or signature mechanism.
 - Optional: install `cities.json` (19 MB) to correct city typos; without it, cleaned city names are used as-is.
 - SmartRecruiters returns at most 100 postings per board; Workday at most 200.
 - Workday, Keka, Teamtailor and Pinpoint use unofficial endpoints that can change without notice.
@@ -72,12 +82,20 @@ Workday takes `tenant/wdHost/site` (`nvidia/wd5/NVIDIAExternalCareerSite`). Team
 
 ## Releasing
 
-```sh
+````sh
 npm version patch        # or minor / major: bumps package.json, commits, tags
-git push --follow-tags   # the release workflow tests, stages the release on npm and creates the GitHub release
-```
+git push --follow-tags   # tests, stages npm, and creates a draft GitHub release
+````
 
-The npm version goes live once the maintainer approves it (npmjs.com > ats-jobs > Staged Packages, or `npm stage approve <id>`).
+The tag workflow does not publish a latest GitHub release. After it succeeds, the
+maintainer must approve the staged npm package with 2FA, confirm publication,
+and only then publish the draft GitHub release:
+
+````sh
+npm stage list ats-jobs
+npm stage approve STAGE_ID_FROM_LIST
+gh release edit "v$(node -p "require('./package.json').version")" --draft=false --latest
+````
 
 Built for [jobs.whatrunsindia.com](https://jobs.whatrunsindia.com), a job board that tracks thousands of companies.
 

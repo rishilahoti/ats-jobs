@@ -1,6 +1,6 @@
 # ats-jobs
 
-[![test](https://github.com/rishilahoti/ats-jobs/actions/workflows/test.yml/badge.svg)](https://github.com/rishilahoti/ats-jobs/actions/workflows/test.yml) [![npm](https://img.shields.io/npm/v/ats-jobs)](https://www.npmjs.com/package/ats-jobs) [![license](https://img.shields.io/npm/l/ats-jobs)](LICENSE)
+[![test](https://github.com/rishilahoti/ats-jobs/actions/workflows/test.yml/badge.svg)](https://github.com/rishilahoti/ats-jobs/actions/workflows/test.yml) [![npm](https://img.shields.io/npm/v/ats-jobs)](https://www.npmjs.com/package/ats-jobs) [![downloads](https://img.shields.io/npm/dw/ats-jobs)](https://www.npmjs.com/package/ats-jobs) [![license](https://img.shields.io/npm/l/ats-jobs)](LICENSE)
 
 **ats-jobs is a Node.js library that fetches public job listings from ten applicant-tracking systems (ATS) and returns them in one consistent JSON shape.** No API keys, no config. Use it to build job boards, aggregators, alerts, or research datasets.
 

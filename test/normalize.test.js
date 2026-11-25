@@ -34,3 +34,8 @@ test('location works without cities.json installed', () => {
   const [job] = normalize('lever', [{ id: '1', text: 'x', categories: { location: 'Bangalore, India' } }]);
   assert.equal(job.location, 'Bengaluru');
 });
+
+test('an unparseable source date falls back to scrape time instead of throwing', () => {
+  const [job] = normalize('lever', [{ id: '1', text: 'x', createdAt: 'not-a-date' }]);
+  assert.ok(!Number.isNaN(Date.parse(job.publishedAt)));
+});

@@ -13,3 +13,15 @@ test('slugs that become hostnames cannot redirect the request to another host', 
     global.fetch = original;
   }
 });
+
+test('dotted hostname slugs like Teamtailor NA boards are still allowed', async () => {
+  const original = global.fetch;
+  let url;
+  global.fetch = async (u) => { url = u; return new Response('{"items":[]}'); };
+  try {
+    assert.deepEqual(await fetchBoard('teamtailor', 'acme.na'), { jobs: [] });
+    assert.equal(url, 'https://acme.na.teamtailor.com/jobs.json');
+  } finally {
+    global.fetch = original;
+  }
+});

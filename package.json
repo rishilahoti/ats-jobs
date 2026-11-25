@@ -1,6 +1,6 @@
 {
   "name": "ats-jobs",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Fetch and normalize public job listings from Ashby, Lever, Greenhouse, Workable, Recruitee, Teamtailor, Pinpoint, SmartRecruiters, Workday, Keka and Rippling into one shape",
   "main": "index.js",
   "types": "index.d.ts",

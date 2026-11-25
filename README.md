@@ -2,9 +2,9 @@
 
 [![test](https://github.com/rishilahoti/ats-jobs/actions/workflows/test.yml/badge.svg)](https://github.com/rishilahoti/ats-jobs/actions/workflows/test.yml) [![npm](https://img.shields.io/npm/v/ats-jobs)](https://www.npmjs.com/package/ats-jobs) [![downloads](https://img.shields.io/npm/dw/ats-jobs)](https://www.npmjs.com/package/ats-jobs) [![license](https://img.shields.io/npm/l/ats-jobs)](LICENSE)
 
-**ats-jobs is a Node.js library that fetches public job listings from ten applicant-tracking systems (ATS) and returns them in one consistent JSON shape.** No API keys, no config. Use it to build job boards, aggregators, alerts, or research datasets.
+**ats-jobs is a Node.js library that fetches public job listings from eleven applicant-tracking systems (ATS) and returns them in one consistent JSON shape.** No API keys, no config. Use it to build job boards, aggregators, alerts, or research datasets.
 
-Ashby · Lever · Greenhouse · Workable · Recruitee · Teamtailor · Pinpoint · SmartRecruiters · Workday · Keka
+Ashby · Lever · Greenhouse · Workable · Recruitee · Teamtailor · Pinpoint · SmartRecruiters · Workday · Keka · Rippling
 
 ```sh
 npm install ats-jobs
@@ -18,7 +18,19 @@ const jobs = await getJobs('lever', 'ro');
 
 // or normalize data you fetched yourself (an array, or { jobs: [...] })
 const same = normalize('lever', rawLeverArray, 'Ro');
+
+// don't know the slug? pass the careers-page URL
+detect('https://jobs.lever.co/ro'); // { provider: 'lever', slug: 'ro' }
 ```
+
+Or from the command line, no code:
+
+```sh
+npx ats-jobs lever ro
+npx ats-jobs https://jobs.lever.co/ro | jq '.[].title'
+```
+
+TypeScript types are included.
 
 Each job looks like:
 
@@ -42,6 +54,7 @@ Each job looks like:
 | SmartRecruiters | `linkedin3` | max 100 per board |
 | Workday | `nvidia/wd5/NVIDIAExternalCareerSite` | max 200 per board |
 | Keka | `disprz` | |
+| Rippling | `rippling` | no description or posted date |
 
 ## FAQ
 
@@ -55,7 +68,7 @@ Each job looks like:
 
 ## Slugs
 
-The slug is the company's id on that vendor, e.g. `ro` in `jobs.lever.co/ro`.
+The slug is the company's id on that vendor, e.g. `ro` in `jobs.lever.co/ro`. `detect(url)` works it out from a careers-page URL.
 Workday takes `tenant/wdHost/site` (`nvidia/wd5/NVIDIAExternalCareerSite`). Teamtailor boards in North America keep the region (`acme.na`).
 
 ## Options

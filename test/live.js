@@ -13,6 +13,7 @@ const CANDIDATES = {
   smartrecruiters: ['linkedin3', 'accorcorpo'],
   workday: ['nvidia/wd5/NVIDIAExternalCareerSite'],
   keka: ['disprz', 'wbg'],
+  rippling: ['rippling'],
 };
 
 (async () => {

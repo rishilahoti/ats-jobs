@@ -9,6 +9,11 @@ const FIXTURES = {
   ashby: [{ jobUrl: 'https://jobs.ashbyhq.com/acme/abc-123', title: 'Engineer', isListed: true }],
   lever: [{ id: 'lev-1', text: 'Designer' }],
   greenhouse: [{ id: 99, title: 'Support', location: { name: 'Remote' } }],
+  // Rippling lists a job once per location; only the first row is kept.
+  rippling: [
+    { uuid: 'r-1', name: 'Analyst', url: 'https://ats.rippling.com/acme/jobs/r-1', workLocation: { label: 'Remote' } },
+    { uuid: 'r-1', name: 'Analyst', url: 'https://ats.rippling.com/acme/jobs/r-1', workLocation: { label: 'DE' } },
+  ],
 };
 
 for (const [provider, raw] of Object.entries(FIXTURES)) {
@@ -21,7 +26,7 @@ for (const [provider, raw] of Object.entries(FIXTURES)) {
   });
 }
 
-test('lists all ten providers', () => assert.equal(PROVIDERS.length, 10));
+test('lists all eleven providers', () => assert.equal(PROVIDERS.length, 11));
 test('unknown provider throws', () => assert.throws(() => normalize('bogus', []), /Unknown provider/));
 test('non-array input throws', () => assert.throws(() => normalize('lever', {}), /Expected an array/));
 
